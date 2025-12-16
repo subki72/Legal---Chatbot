@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: legal-backend
+    ports:
+      - "8000:8000"
+    dns: # <--- TAMBAHAN BARU
+      - 8.8.8.8 # <--- TAMBAHAN BARU
+    env_file:
+      - .env
+    volumes:
+      - ./Data:/app/Data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: legal-frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    dns: # <--- TAMBAHAN BARU
+      - 8.8.8.8 # <--- TAMBAHAN BARU
+    environment:
+      - BACKEND_URL=http://backend:8000
